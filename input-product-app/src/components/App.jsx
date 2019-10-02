@@ -9,7 +9,8 @@ class App extends Component {
         this.state = {
             products: [],
             selectedFile: null,
-            productName: ''
+            productName: '',
+            productPrice: null
         }
     }
 
@@ -33,19 +34,30 @@ class App extends Component {
         if(this.state.productName){
             if (this.state.selectedFile){
                 let fd = new FormData()
+                let data = {
+                    productName: this.state.productName,
+                    productPrice: this.state.productPrice
+                }
+
                 fd.append('browse_file', this.state.selectedFile, this.state.selectedFile.name)
-                fd.append('product_name', this.state.productName)
+                fd.append('data', JSON.stringify(data))
+
                 axios.post(
                     URL_API + 'products', fd
                 ).then(res => {
                     alert('Input product success')
+
                     this.setState({
                         selectedFile: null,
-                        productName: ''
+                        productName: '',
+                        productPrice: null
                     })
+
                     this.refs.productName.value = ''
+                    this.refs.productPrice.value = null
                     this.refs.fileBtn.value = null
                     this.getData()
+
                 }).catch(err => {
                     console.log(err)
                 })
@@ -63,7 +75,8 @@ class App extends Component {
                 <tr key={val.id}>
                     <td>{val.id}</td>
                     <td>{val.product_name}</td>
-                    <td><img src={URL_API + 'files/' + val.product_image} width="100" alt={val.id}/></td>
+                    <td>{val.product_price}</td>
+                    <td><img src={URL_API + val.product_image} width="100" alt={val.id}/></td>
                 </tr> 
             )
         })
@@ -78,7 +91,8 @@ class App extends Component {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Product Name</th>
+                                <th>Name</th>
+                                <th>Price</th>
                                 <th>Picture</th>
                             </tr>
                         </thead>
@@ -92,7 +106,8 @@ class App extends Component {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th>Product Name</th>
+                                <th>Name</th>
+                                <th>Price</th>
                                 <th>Picture</th>
                                 <th>Action</th>
                             </tr>
@@ -101,6 +116,9 @@ class App extends Component {
                             <tr>
                                 <td>
                                     <input type="text" ref="productName" onChange={e => this.setState({productName: e.target.value})} className="form-control"/>
+                                </td>
+                                <td>
+                                    <input type="text" ref="productPrice" onChange={e => this.setState({productPrice: parseInt(e.target.value)})} className="form-control"/>
                                 </td>
                                 <td>
                                     <input type="file" ref="fileBtn" className="d-none" onChange={e => this.setState({selectedFile: e.target.files[0]})}/>

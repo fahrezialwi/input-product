@@ -1,3 +1,3 @@
-# JC10 Input Product App
+# JC10 Backend Input Product App
 
-Purwadhika aplikasi Input Product
+Purwadhika materi backend aplikasi input product
